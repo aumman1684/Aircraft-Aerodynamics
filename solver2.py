@@ -84,14 +84,14 @@ while True:
         break
 
     if flow_type == "1" or flow_type == "uniform":
-        U = float(input("Enter uniform flow speed: "))
-        alpha_deg = float(input("Enter flow angle (deg): "))
+        U = float(input("Enter uniform flow speed [m/s]: "))
+        alpha_deg = float(input("Enter flow angle [deg]: "))
         uniform(U, np.radians(alpha_deg))
 
     elif flow_type in ["2", "3", "4", "source/sink", "vortex", "doublet"]:
         x0 = float(input("Enter x-location: "))
         y0 = float(input("Enter y-location: "))
-        strength = float(input("Enter strength: "))
+        strength = float(input("Enter strength [m^2/s]: "))
 
         if flow_type == "2" or flow_type == "source/sink":
             source(strength, x0, y0)
