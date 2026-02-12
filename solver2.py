@@ -3,8 +3,8 @@ import matplotlib.pyplot as plt
 
 ###### GRID ###########
 
-x = np.linspace(-5, 5, 300)
-y = np.linspace(-5, 5, 300)
+x = np.linspace(-5, 5, 1000)
+y = np.linspace(-5, 5, 1000)
 X, Y = np.meshgrid(x, y)
 
 phi = np.zeros_like(X)
@@ -14,7 +14,6 @@ v = np.zeros_like(X)
 
 U_inf = 5   # m/s
 alpha = 0.0   # angle of attack (rad)
-
 
 ##### FLOW TYPES ######
 
@@ -68,7 +67,7 @@ def doublet(strength, x0, y0):
     u -= strength/(2*np.pi)*((delta_x**2 - delta_y**2)/r2)
     v -= strength/(2*np.pi)*(2*delta_x*delta_y/r2)
 
-### USER INTERFACE ##### 
+##### USER INTERFACE ##### 
 
 print("Enter canonical flows:")
 print("1: uniform")
@@ -76,6 +75,7 @@ print("2: source/sink")
 print("3: vortex")
 print("4: doublet")
 print("Type 'done' to finish adding flows. \n")
+print (f"\033[91mEnter (x,y) coordinates between {np.min(x)} and  {np.max(x)}.\n \033[0m")
 
 while True:
     flow_type = input("Enter flow type: ")
@@ -103,19 +103,15 @@ while True:
     else:
         print("Invalid selection.")
 
-# ------------------------------------------------------------
-# Compute Pressure Coefficient
-# ------------------------------------------------------------
+##### PRESSURE COEFFICIENT #####
 
-V2 = u**2 + v**2
+Vi = u**2 + v**2
 
-Cp = 1 - V2/(U_inf**2)
+Cp = 1 - Vi/(U_inf**2)
 
-# ------------------------------------------------------------
-# Plot Results
-# ------------------------------------------------------------
+###### PLOTS #######
 
-print('cp: ' , Cp)
+#print('cp: ' , Cp)
 
 plt.figure()
 plt.contourf(X, Y, psi, levels=50)
