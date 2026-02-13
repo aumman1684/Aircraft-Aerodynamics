@@ -12,7 +12,7 @@ psi = np.zeros_like(X)
 u = np.zeros_like(X)
 v = np.zeros_like(X)
 
-U_inf = 5   # m/s
+U_inf = 0   # m/s
 alpha = 0.0   # angle of attack (rad)
 
 ##### FLOW TYPES ######
@@ -105,30 +105,36 @@ while True:
 
 ##### PRESSURE COEFFICIENT #####
 
-Vi = u**2 + v**2
+Vi2 = u**2 + v**2
 
-Cp = 1 - Vi/(U_inf**2)
+print('Vi2: ' , Vi2)
+
+Cp = 1 - Vi2/(U**2)
+
+###### Cl ########
+
+
 
 ###### PLOTS #######
 
-#print('cp: ' , Cp)
+print('cp: ' , Cp)
 
 plt.figure()
-plt.contourf(X, Y, psi, levels=50)
+plt.contourf(X, Y, psi, levels=60)
 plt.colorbar(label="Stream Function")
 plt.title("Streamlines")
 plt.axis("equal")
 plt.show()
 
 plt.figure()
-plt.contourf(X, Y, phi, levels=50)
+plt.contourf(X, Y, phi, levels=60)
 plt.colorbar(label="Potential Function")
 plt.title("Potential Field")
 plt.axis("equal")
 plt.show()
 
 plt.figure()
-plt.contourf(X, Y, Cp, levels=50)
+plt.contourf(X, Y, Cp, levels=60)
 plt.colorbar(label="Pressure Coefficient")
 plt.title("Pressure Coefficient Field")
 plt.axis("equal")
