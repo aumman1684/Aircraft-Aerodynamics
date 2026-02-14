@@ -176,6 +176,8 @@ cp_max = np.max(Cp)
 levels = np.linspace(cp_min, cp_max, 120)
 plt.contourf(X, Y, Cp, levels=levels)
 plt.colorbar(label="Pressure Coefficient")
+plt.text(0.02, 0.98, f'Max Cp: {cp_max:.2f}', transform=plt.gca().transAxes, fontsize=10, verticalalignment='top', bbox=dict(boxstyle="round,pad=0.3", facecolor="white", alpha=0.8))
+plt.text(0.02, 0.90, f'Min Cp: {cp_min:.2f}', transform=plt.gca().transAxes, fontsize=10, verticalalignment='top', bbox=dict(boxstyle="round,pad=0.3", facecolor="white", alpha=0.8))
 if R is not None:
     circle = plt.Circle(doublet_center, R, color='k', fill=False)
     plt.gca().add_patch(circle)
@@ -195,3 +197,24 @@ plt.title("Velocity Field")
 plt.show()
 
 print(f"R is qual to: {R:.3f} m")
+
+############################
+# LIFT COEFFICIENT VS ANGULAR VELOCITY
+############################
+
+rho = 1.225  # kg/m^3 (air, not actually needed since it cancels)
+
+if R is not None and U_ref is not None and U_ref > 1e-12:
+
+    omega_vals = np.linspace(-200, 200, 200)  # rad/s
+    Gamma_vals = 2*np.pi * R**2 * omega_vals
+    Cl_vals = Gamma_vals / (U_ref * R)
+
+    plt.figure()
+    plt.plot(omega_vals, Cl_vals)
+    plt.xlabel("Angular velocity ω [rad/s]")
+    plt.ylabel("Lift coefficient C_L")
+    plt.title("Lift Coefficient vs Angular Velocity")
+    plt.grid(True)
+    plt.show()
+
