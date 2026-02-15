@@ -1,9 +1,13 @@
 import numpy as np
+import openpyxl
 import matplotlib.pyplot as plt
 
 ############################
 # GRID
 ############################
+
+wb = openpyxl.load_workbook('downwash_angles.xlsx')
+ws = wb.active
 
 x = np.linspace(-5, 5, 1000)
 y = np.linspace(-5, 5, 1000)
@@ -76,145 +80,214 @@ def doublet(strength, x0, y0):
     u -= strength/(2*np.pi)*((dx**2 - dy**2)/r4)
     v -= strength/(2*np.pi)*(2*dx*dy/r4)
 
+####### Wing Downwash #######
+
+# Parameters
+c = 1.0                    # chord
+U_inf = 50.0               # freestream speed [m/s]
+Gamma_w = 100             # wing circulation [m^2/s]
+
+# Wing vortex at origin
+uniform(U_inf, 0.0)
+vortex(Gamma_w, 0.0, 0.0)
+
+# Tail position (5 chords downstream, 1 chord above)
+x_t = 1*c
+y_t = 1*c
+
+for i in range(0,9, 1):
+    x_t = 1*c + i*c
+
+    # Compute induced velocity at tail location analytically
+    r2_t = x_t**2 + y_t**2
+    u_t = -Gamma_w/(2*np.pi) * (y_t/r2_t)
+    v_t =  Gamma_w/(2*np.pi) * (x_t/r2_t)
+
+    epsilon = v_t / U_inf
+    
+    print("Induced vertical velocity at tail:", v_t)
+    print("Downwash angle (rad):", epsilon)
+    print("Downwash angle (deg):", np.degrees(epsilon))
+    ws.cell(row=4+i, column=5).value = np.degrees(epsilon)
+    ws.cell(row=4+i, column=3).value = x_t
+    ws.cell(row=4+i, column=4).value = y_t
+    
+
+    print(f"For x_t = {x_t} and y_t = {y_t} \n")  
+
+wb.save('downwash_angles.xlsx')
+
+
+x_t = 5*c
+
+for i in range(1, 10, 1):
+    y_t = i*c
+
+    # Compute induced velocity at tail location analytically
+    r2_t = x_t**2 + y_t**2
+    u_t = -Gamma_w/(2*np.pi) * (y_t/r2_t)
+    v_t =  Gamma_w/(2*np.pi) * (x_t/r2_t)
+
+    epsilon = v_t / U_inf
+
+    print("Induced vertical velocity at tail:", v_t)
+    print("Downwash angle (rad):", epsilon)
+    print("Downwash angle (deg):", np.degrees(epsilon))
+    ws.cell(row=3+i, column=8).value = np.degrees(epsilon)
+    ws.cell(row=3+i, column=6).value = x_t
+    ws.cell(row=3+i, column=7).value = y_t
+
+    print(f"For x_t = {x_t} and y_t = {y_t} \n")  
+
+wb.save('downwash_angles.xlsx')
+wb.close()
+
+
+key = input("\033[91mDo you want cannonical flow plots? (y/n): \n\033[0m")
+
 ############################
 # USER INPUT
 ############################
 
-print("Enter canonical flows:")
-print("1: uniform")
-print("2: source/sink")
-print("3: vortex")
-print("4: doublet")
-print("Type 'done' to finish.\n")
+if key == "y": 
 
-while True:
-    flow_type = input("Enter flow type: ")
+    print("Enter canonical flows:")
+    print("1: uniform")
+    print("2: source/sink")
+    print("3: vortex")
+    print("4: doublet")
+    print("Type 'done' to finish.\n")
 
-    if flow_type.lower() == "done":
-        break
+    while True:
+        flow_type = input("Enter flow type: ")
 
-    if flow_type in ["1", "uniform"]:
-        U = float(input("Uniform speed [m/s]: "))
-        alpha_deg = float(input("Angle [deg]: "))
-        uniform(U, np.radians(alpha_deg))
+        if flow_type.lower() == "done":
+            break
 
-    elif flow_type in ["2", "source/sink"]:
-        x0 = float(input("x-location: "))
-        y0 = float(input("y-location: "))
-        strength = float(input("Strength: "))
-        source(strength, x0, y0)
+        if flow_type in ["1", "uniform"]:
+            U = float(input("Uniform speed [m/s]: "))
+            alpha_deg = float(input("Angle [deg]: "))
+            uniform(U, np.radians(alpha_deg))
 
-    elif flow_type in ["3", "vortex"]:
-        x0 = float(input("x-location: "))
-        y0 = float(input("y-location: "))
-        strength = float(input("Strength: "))
-        vortex(strength, x0, y0)
+        elif flow_type in ["2", "source/sink"]:
+            x0 = float(input("x-location: "))
+            y0 = float(input("y-location: "))
+            strength = float(input("Strength: "))
+            source(strength, x0, y0)
 
-    elif flow_type in ["4", "doublet"]:
-        x0 = float(input("x-location: "))
-        y0 = float(input("y-location: "))
-        strength = float(input("Strength: "))
-        doublet(strength, x0, y0)
+        elif flow_type in ["3", "vortex"]:
+            x0 = float(input("x-location: "))
+            y0 = float(input("y-location: "))
+            strength = float(input("Strength: "))
+            vortex(strength, x0, y0)
 
-############################
-# CYLINDER RADIUS + MASK
-############################
+        elif flow_type in ["4", "doublet"]:
+            x0 = float(input("x-location: "))
+            y0 = float(input("y-location: "))
+            strength = float(input("Strength: "))
+            doublet(strength, x0, y0)
 
-R = None
+    ############################
+    # CYLINDER RADIUS + MASK
+    ############################
 
-if U_ref is not None and doublet_strength is not None:
-    R = np.sqrt(doublet_strength / (2*np.pi*U_ref))
+    R = None
 
-    dx = X - doublet_center[0]
-    dy = Y - doublet_center[1]
-    mask = dx**2 + dy**2 <= R**2
+    if U_ref is not None and doublet_strength is not None:
+        R = np.sqrt(doublet_strength / (2*np.pi*U_ref))
 
-    u[mask] = 0.0
-    v[mask] = 0.0
+        dx = X - doublet_center[0]
+        dy = Y - doublet_center[1]
+        mask = dx**2 + dy**2 <= R**2
 
-############################
-# PRESSURE COEFFICIENT
-############################
+        u[mask] = 0.0
+        v[mask] = 0.0
 
-Vi2 = u**2 + v**2
+    ############################
+    # PRESSURE COEFFICIENT
+    ############################
 
-if U_ref is not None and U_ref > 1e-12:
-    Cp = 1 - Vi2 / (U_ref**2)
-else:
-    Cp = np.zeros_like(Vi2)
+    Vi2 = u**2 + v**2
 
-############################
-# PLOTS
-############################
+    if U_ref is not None and U_ref > 1e-12:
+        Cp = 1 - Vi2 / (U_ref**2)
+    else:
+        Cp = np.zeros_like(Vi2)
 
-# Streamlines
-plt.figure()
-plt.contourf(X, Y, psi, 60)
-plt.colorbar(label="Stream Function")
-if R is not None:
-    circle = plt.Circle(doublet_center, R, color='k', fill=False)
-    plt.gca().add_patch(circle)
-plt.axis("equal")
-plt.title("Streamlines")
-plt.show()
+    ############################
+    # PLOTS
+    ############################
 
-# Potential
-plt.figure()
-plt.contourf(X, Y, phi, 60)
-plt.colorbar(label="Potential Function")
-if R is not None:
-    circle = plt.Circle(doublet_center, R, color='k', fill=False)
-    plt.gca().add_patch(circle)
-plt.axis("equal")
-plt.title("Potential Field")
-plt.show()
-
-# Pressure coefficient
-plt.figure()
-cp_min = np.min(Cp)
-cp_max = np.max(Cp)
-levels = np.linspace(cp_min, cp_max, 120)
-plt.contourf(X, Y, Cp, levels=levels)
-plt.colorbar(label="Pressure Coefficient")
-plt.text(0.02, 0.98, f'Max Cp: {cp_max:.2f}', transform=plt.gca().transAxes, fontsize=10, verticalalignment='top', bbox=dict(boxstyle="round,pad=0.3", facecolor="white", alpha=0.8))
-plt.text(0.02, 0.90, f'Min Cp: {cp_min:.2f}', transform=plt.gca().transAxes, fontsize=10, verticalalignment='top', bbox=dict(boxstyle="round,pad=0.3", facecolor="white", alpha=0.8))
-if R is not None:
-    circle = plt.Circle(doublet_center, R, color='k', fill=False)
-    plt.gca().add_patch(circle)
-plt.axis("equal")
-plt.title("Pressure Coefficient Field")
-plt.show()
-
-# Velocity field
-plt.figure()
-plt.quiver(X[::25, ::25], Y[::25, ::25],
-           u[::25, ::25], v[::25, ::25])
-if R is not None:
-    circle = plt.Circle(doublet_center, R, color='k', fill=False)
-    plt.gca().add_patch(circle)
-plt.axis("equal")
-plt.title("Velocity Field")
-plt.show()
-
-print(f"R is qual to: {R:.3f} m")
-
-############################
-# LIFT COEFFICIENT VS ANGULAR VELOCITY
-############################
-
-rho = 1.225  # kg/m^3 (air, not actually needed since it cancels)
-
-if R is not None and U_ref is not None and U_ref > 1e-12:
-
-    omega_vals = np.linspace(-200, 200, 200)  # rad/s
-    Gamma_vals = 2*np.pi * R**2 * omega_vals
-    Cl_vals = Gamma_vals / (U_ref * R)
-
+    # Streamlines
     plt.figure()
-    plt.plot(omega_vals, Cl_vals)
-    plt.xlabel("Angular velocity ω [rad/s]")
-    plt.ylabel("Lift coefficient C_L")
-    plt.title("Lift Coefficient vs Angular Velocity")
-    plt.grid(True)
+    plt.contourf(X, Y, psi, 60)
+    plt.colorbar(label="Stream Function")
+    if R is not None:
+        circle = plt.Circle(doublet_center, R, color='k', fill=False)
+        plt.gca().add_patch(circle)
+    plt.axis("equal")
+    plt.title("Streamlines")
     plt.show()
 
+    # Potential
+    plt.figure()
+    plt.contourf(X, Y, phi, 60)
+    plt.colorbar(label="Potential Function")
+    if R is not None:
+        circle = plt.Circle(doublet_center, R, color='k', fill=False)
+        plt.gca().add_patch(circle)
+    plt.axis("equal")
+    plt.title("Potential Field")
+    plt.show()
+
+    # Pressure coefficient
+    plt.figure()
+    cp_min = np.min(Cp)
+    cp_max = np.max(Cp)
+    levels = np.linspace(cp_min, cp_max, 120)
+    plt.contourf(X, Y, Cp, levels=levels)
+    plt.colorbar(label="Pressure Coefficient")
+    plt.text(0.02, 0.98, f'Max Cp: {cp_max:.2f}', transform=plt.gca().transAxes, fontsize=10, verticalalignment='top', bbox=dict(boxstyle="round,pad=0.3", facecolor="white", alpha=0.8))
+    plt.text(0.02, 0.90, f'Min Cp: {cp_min:.2f}', transform=plt.gca().transAxes, fontsize=10, verticalalignment='top', bbox=dict(boxstyle="round,pad=0.3", facecolor="white", alpha=0.8))
+    if R is not None:
+        circle = plt.Circle(doublet_center, R, color='k', fill=False)
+        plt.gca().add_patch(circle)
+    plt.axis("equal")
+    plt.title("Pressure Coefficient Field")
+    plt.show()
+
+    # Velocity field
+    plt.figure()
+    plt.quiver(X[::25, ::25], Y[::25, ::25],
+            u[::25, ::25], v[::25, ::25])
+    if R is not None:
+        circle = plt.Circle(doublet_center, R, color='k', fill=False)
+        plt.gca().add_patch(circle)
+    plt.axis("equal")
+    plt.title("Velocity Field")
+    plt.show()
+
+    print(f"R is qual to: {R:.3f} m")
+
+    ############################
+    # LIFT COEFFICIENT VS ANGULAR VELOCITY
+    ############################
+
+    rho = 1.225  # kg/m^3 (air, not actually needed since it cancels)
+
+    if R is not None and U_ref is not None and U_ref > 1e-12:
+
+        omega_vals = np.linspace(-200, 200, 200)  # rad/s
+        Gamma_vals = 2*np.pi * R**2 * omega_vals
+        Cl_vals = Gamma_vals / (U_ref * R)
+
+        plt.figure()
+        plt.plot(omega_vals, Cl_vals)
+        plt.xlabel("Angular velocity ω [rad/s]")
+        plt.ylabel("Lift coefficient C_L")
+        plt.title("Lift Coefficient vs Angular Velocity")
+        plt.grid(True)
+        plt.show()
+
+else: 
+    pass
