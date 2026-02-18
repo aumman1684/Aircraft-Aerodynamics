@@ -1,0 +1,59 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+# ==========================
+# USER SETTINGS
+# ==========================
+
+file_path = "C:\Users\umman\OneDrive\Masaüstü\Aircraft Aerodynamics\Assignment 2\polar_results.txt"   # Path to your text file
+delimiter = None               # None = whitespace, "," = CSV
+skip_header = 0                # Number of header lines to skip
+
+cl_column = 1                  # Column index of Cl (0-based)
+cd_column = 2                  # Column index of Cd (0-based)
+
+plot_style = '-'               # '-', '--', 'o', etc.
+line_width = 2
+marker_size = 6
+color = None                   # None = default matplotlib color
+
+x_label = r"$C_D$"
+y_label = r"$C_L$"
+title = "Lift-Drag Polar"
+
+grid_on = True
+save_figure = False
+save_name = "cl_cd_plot.png"
+
+# ==========================
+# LOAD DATA
+# ==========================
+
+data = np.loadtxt(file_path, delimiter=delimiter, skiprows=skip_header)
+
+Cl = data[:, cl_column]
+Cd = data[:, cd_column]
+
+# ==========================
+# PLOT
+# ==========================
+
+plt.figure()
+plt.plot(Cd, Cl, plot_style,
+         linewidth=line_width,
+         markersize=marker_size,
+         color=color)
+
+plt.xlabel(x_label)
+plt.ylabel(y_label)
+plt.title(title)
+
+if grid_on:
+    plt.grid(True)
+
+plt.tight_layout()
+
+if save_figure:
+    plt.savefig(save_name, dpi=300)
+
+plt.show()

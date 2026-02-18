@@ -103,7 +103,7 @@ for i in range(0,9, 1):
     u_t = -Gamma_w/(2*np.pi) * (y_t/r2_t)
     v_t =  Gamma_w/(2*np.pi) * (x_t/r2_t)
 
-    epsilon = v_t / U_inf
+    epsilon = np.arctan2(v_t , U_inf)
     
     print("Induced vertical velocity at tail:", v_t)
     print("Downwash angle (rad):", epsilon)
@@ -128,7 +128,7 @@ for i in range(1, 10, 1):
     u_t = -Gamma_w/(2*np.pi) * (y_t/r2_t)
     v_t =  Gamma_w/(2*np.pi) * (x_t/r2_t)
 
-    epsilon = v_t / U_inf
+    epsilon = np.arctan2(v_t , U_inf)
 
     print("Induced vertical velocity at tail:", v_t)
     print("Downwash angle (rad):", epsilon)
@@ -141,6 +141,49 @@ for i in range(1, 10, 1):
 
 wb.save('downwash_angles.xlsx')
 wb.close()
+
+###########################################################
+# REQUIRED TAIL ANGLE OF ATTACK (5% DOWNWARD FORCE)
+###########################################################
+
+# --- 1. Wing lift coefficient (2D Kutta–Joukowski) ---
+C_L_w = 2 * Gamma_w / (U_inf * c)
+print("\nWing lift coefficient C_L_w =", C_L_w)
+
+# --- 2. Required tail lift coefficient ---
+# L_t = -0.05 L_w
+# S_t / S_w = 0.1
+# => C_L_t = -0.05 * (S_w/S_t) * C_L_w
+C_L_t_required = 0.05 * (1/0.1) * C_L_w
+print("Required tail lift coefficient C_L_t =", C_L_t_required)
+
+# --- 3. Effective angle from thin airfoil theory ---
+# C_L = 2*pi*alpha_eff
+alpha_eff = C_L_t_required / (2*np.pi)
+
+print("Required effective tail AoA (rad) =", alpha_eff)
+print("Required effective tail AoA (deg) =", np.degrees(alpha_eff))
+
+# --- 4. Downwash at actual tail position (5c,1c) ---
+x_t = 5*c
+y_t = 1*c
+
+r2_t = x_t**2 + y_t**2
+v_t = Gamma_w/(2*np.pi)*(x_t/r2_t)
+
+epsilon = np.arctan2(v_t, U_inf)
+
+print("Downwash angle epsilon (deg) =", np.degrees(epsilon))
+
+# --- 5. Geometric tail angle ---
+# alpha_eff = alpha_tail - epsilon
+# => alpha_tail = alpha_eff + epsilon
+alpha_tail = alpha_eff + epsilon
+
+print("Required geometric tail AoA (rad) =", alpha_tail)
+print("Required geometric tail AoA (deg) =", np.degrees(alpha_tail))
+print("###########################################################\n")
+
 
 
 key = input("\033[91mDo you want cannonical flow plots? (y/n): \n\033[0m")
