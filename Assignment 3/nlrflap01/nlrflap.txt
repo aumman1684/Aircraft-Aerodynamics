@@ -1,0 +1,77 @@
+o Scale the original grid (nlrflap_orig.x) so that chord length is 1.0 ft 
+and that z=1.0.  Creates Plot3d grid file nlrflap.x.
+
+f77 gridfix.f -o gridfix
+gridfix
+
+o Convert the 3D, unformatted, multi-zone Plot3d grid file (nlrflap.x)
+  to common grid file format (nlrflap.cgd).
+
+/bin/rm -rf nlrflap.cgd
+cfcnvt < cfcnvt.x.com
+
+o Apply boundary conditions within nlrflap.cgd.
+
+gman < gman.com
+
+o Run WIND using data input file  nlrflap.dat
+
+wind -runinplace -dat nlrflap -mp -parallel
+wind -runinplace -dat nlrflap
+
+o Residual of flow.
+
+resplt < resplt.nsl2.com
+cfpost < cfpost.nsl2.com
+jot nsl2.gen
+
+o Residual of L2 of Spalart-Allmaras.
+
+resplt < resplt.sal2.com
+cfpost < cfpost.sal2.com
+jot sal2.gen
+
+o History of lift.
+
+resplt < resplt.liftconv.com
+cfpost < cfpost.liftconv.com
+jot liftconv.gen
+
+o Create PLOT3D solution file (nlrflap.q) and blanked grid (nlrflap_blank.x).
+
+cfpost < cfpost.plot3d.com
+fast fast.com
+
+o Integrate forces on the airfoil.
+
+cfpost < cfpost.forces.com
+jot forces.lis
+
+o Generate Cp on airfoil and flap.
+
+cfpost < cfpost.cp.com
+jot cp.gen
+
+o Write out boundary layer profile at I165.
+
+cfpost < cfpost.bl.com
+jot bl.gen
+
+o To create a contour plot using cfpost, need to create a 3D 
+  n3d.cgd and n3d.cfl file.
+
+jot make3d.f
+f77 make3d.f -o make3d
+make3d
+
+/bin/rm -rf n3d.cgd
+cfcnvt < cfcnvt.n3dx.com
+gman < gman.n3d.com
+
+/bin/rm -rf n3d.cfl
+cfcnvt < cfcnvt.n3dq.com
+
+cfpost < cfpost.mach.com
+cfpost < cfpost.pres.com
+
+

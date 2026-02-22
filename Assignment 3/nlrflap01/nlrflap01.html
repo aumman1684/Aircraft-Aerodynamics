@@ -1,0 +1,941 @@
+<HTML>
+
+<HEAD>
+<TITLE> NLR Airfoil with Flap: Study #1 </TITLE>
+</HEAD>
+
+<BODY TEXT="#000000" BGCOLOR="#FFFFFF" LINK="#0000EE" 
+  VLINK="#551A8B" ALINK="#FF0000">
+
+<!---------------------------------------------------------------------->
+<!...Heading Information...>
+
+<B>NPARC Alliance Validation Archive</B><BR>
+<B><A HREF="../../validation.html">
+ Validation Home</A></B> &nbsp; <B> &gt; </B> &nbsp; 
+<B><A HREF="../../archive.html">
+ Archive</A></B> &nbsp; <B> &gt; </B> &nbsp; 
+<B><A HREF="../nlrflap.html">
+  NLR Airfoil with Flap</A></B> &nbsp; <B> &gt; </B> &nbsp; 
+<B> Study #1 </B>
+
+<HR>
+
+<!---------------------------------------------------------------------->
+<!...Title...>
+
+<CENTER>
+<H2><FONT COLOR="#800000"> NLR Airfoil with Flap: Study #1 </FONT></H2>
+</CENTER>
+
+<P><BR>
+
+
+<!---------------------------------------------------------------------->
+<!...Image...>
+
+<P><CENTER>
+<IMG SRC="mach1.jpg" BORDER=1 ><BR>
+  <CAPTION> 
+    <B>Figure 1. Mach number contours about the NLR airfoil with flap.</B>  
+  </CAPTION>
+</IMG>
+</CENTER>
+
+
+<!---------------------------------------------------------------------->
+<H3><U><FONT COLOR="#800000">Introduction</FONT></U></H3>
+
+<P> This study is an example study demonstrating the use of the
+overlapping (Chimera) capabilities of WIND and involves an airfoil with
+a flap.  The grid about the flap is contained wholly within the grid of
+the main airfoil.  Experimental data obtained by NLR is available for
+this configuration; however, at this time, the experimental data has
+not been obtained by the author.
+
+
+<!---------------------------------------------------------------------->
+<H3><U><FONT COLOR="#800000">Download tar File</FONT></U></H3>
+
+<P> All of the archive files of this validation case are available in 
+the Unix compressed tar file 
+<A HREF="nlrflap01.tar.Z"> nlrflap01.tar.Z</A>.
+The files can then be accessed by the commands
+
+<P><BLOCKQUOTE> 
+<B>uncompress <A HREF="nlrflap01.tar.Z"> nlrflap01.tar.Z</A></B><BR>
+<B>tar -xvof nlrflap01.tar</B><BR>
+</BLOCKQUOTE>
+
+
+<!---------------------------------------------------------------------->
+<H3><U><FONT COLOR="#800000">Grid</FONT></U></H3>
+
+<P> The computational process starts from an existing grid.  For this
+study, the grid is a two-zone, two-dimensional grid in which each each
+zone is a C-grid.  Figure 2 shows the two zones with the overlapping.
+
+<P><CENTER>
+<IMG SRC="grid.jpg" BORDER=1 ><BR>
+  <CAPTION> 
+    <B>Figure 2. Computational grid showing overlapped grids.</B>  
+  </CAPTION>
+</IMG>
+</CENTER>
+
+<P> Zone 1 is wrapped around the airfoil and has dimensions of 205 x
+59.  The airfoil surface and wake is located at the J1 boundary.  The
+I-coordinate starts at the downstream boundary, intersects the trailing
+edge at I29, proceeds along the bottom of the airfoil, around the
+leading edge, downstream along the top of the airfoil, intersects the
+trailing edge again at I177, and continues to the outflow boundary.
+The JMAX grid line is the farfield boundary of the flow domain.
+
+<P> Zone 2 has dimensions of 179 x 33 is wrapped around the flap. The
+airfoil surface and wake is located at the J1 boundary.  The
+I-coordinate starts at the downstream boundary, intersects the trailing
+edge at I21, proceeds along the bottom of the airfoil, around the
+leading edge, downstream along the top of the airfoil, intersects the
+trailing edge again at I159, and continues to the downstream boundary.
+
+<P> The grid is contained in a PLOT3D grid file named <A
+HREF="nlrflap.x">nlrflap.x</A> (unformatted, multi-zone, 3D, whole).
+
+<P> The CFCNVT utility is used to convert the PLOT3D grid file to the 
+common grid (.cgd) file format for WIND. This is done using the command
+
+<BLOCKQUOTE>
+  <B>cfcnvt &lt; <A HREF="cfcnvt.x.com">cfcnvt.x.com</A></B>
+</BLOCKQUOTE>
+
+<P> where the file <A HREF="cfcnvt.x.com">cfcnvt.x.com</A> is a command
+input file. A common grid file named <A
+HREF="nlrflap.cgd">nlrflap.cgd</A> is created.  For simulating planar
+flows in WIND, the three-dimensional flow equations are applied.  This
+requires that the grid plane be in the z = 1.0 plane, which is the case
+in the PLOT3D grid file.
+
+
+<!---------------------------------------------------------------------->
+<H3><U><FONT COLOR="#800000">Initial Conditions</FONT></U></H3>
+
+<P> This study has freestream flow conditions as summarized in Table 1
+below.  The computational flow field is initialized with uniform flow
+corresponding to these freestream conditions.
+
+<CENTER><TABLE BORDER CELLPADDING=7 >
+<CAPTION><B>Table 1. Freestream conditions.</B></CAPTION>
+
+<TR>
+<TH>Mach</TH>
+<TH>Pressure (psia)</TH>
+<TH>Temperature (R)</TH>
+<TH>Angle-of-Attack (deg)</TH>
+<TH>Angle-of-Sideslip (deg)</TH>
+</TR>
+
+<TR>
+<TD>   0.2 </TD>
+<TD>  14.7 </TD>
+<TD> 520.0 </TD>
+<TD>  10.0 </TD>
+<TD>   0.0 </TD>
+</TR>
+
+</TABLE></CENTER>
+
+
+<!---------------------------------------------------------------------->
+<H3><U><FONT COLOR="#800000">Boundary Conditions</FONT></U></H3>
+
+<P> The boundary conditions must now be specified for the grid and this
+is done with the GMAN utility. First, the boundary condition types are
+summarized. An <B>INVISCID WALL</B> boundary condition is applied at
+the J1 boundaries along the airfoil and flap. An <B>INFLOW OUTFLOW</B>
+boundary condition is applied at the JMAX boundary of zone 1, which
+should all be subsonic inflow at the freestream conditions.  The I1 and
+IMAX boundaries of zone 1 are specified as <B>CONFINED OUTFLOW</B>
+boundaries.  The <B>CONFINED OUTFLOW</B> allows the static pressure to
+be directly specified and is set to be equal to the freestream
+pressure.  The C-grids have boundaries aft of the trailing edges that
+are <B>COUPLED</B> with the same zone.  The overlapped regions and
+boundary conditions must also be defined.
+
+<P> The procedure for setting the boundary conditions using GMAN 
+with the graphics interface is as follows
+
+<OL>
+
+<P><LI> Start GMAN.</LI>
+
+<BLOCKQUOTE><B>
+  gman
+</B></BLOCKQUOTE>
+
+<P><LI> Read in the common grid file by typing at the GMAN prompt.</LI>
+
+<BLOCKQUOTE>
+  <B>file nlrflap.cgd</B>
+</BLOCKQUOTE>
+
+<P><LI> Specify that units are feet / slugs / seconds.</LI>
+
+<BLOCKQUOTE>
+  <B>units fss</B>
+</BLOCKQUOTE>
+
+<P><LI> Switch to graphics mode.</LI>
+
+<BLOCKQUOTE>
+  <B>swi</B>
+</BLOCKQUOTE>
+
+<P><LI> Display the grid.</LI>
+
+<BLOCKQUOTE>
+  Pick <B>SHOW </B><I>(upper right panel)</I><BR>
+  Pick <B>SHOW SURFACES</B><BR>
+  Pick <B>PICK ZONE</B><BR>
+  Pick <B>1</B><BR>
+  Pick <B>PICK K-PLANE</B>
+</BLOCKQUOTE>
+
+<P> At this point the grid for zone 1 will be displayed since there is only 
+one K grid plane, K=1. Moving the mouse so that the cross-cursor is near the
+upper-right most grid point and clicking the left mouse button will
+cause the coordinates of that point to be displayed in the middle right
+panel. It should indicate that the coordinates of point (205,59,1) are
+x = 11.657 ft, y = 10.567 ft, and z = 1.0 ft. Note that the units are
+feet, which was desired from the <B>units fss</B> command. The z = 1.0 ft 
+is required by WIND for two-dimensional domains. 
+
+<P> The grid for zone 2 can be displayed with the following commands
+
+<BLOCKQUOTE>
+  Pick <B>PICK ZONE</B><BR>
+  Pick <B>2</B><BR>
+  Pick <B>PICK K-PLANE</B>
+</BLOCKQUOTE>
+
+<P><LI> Cut the hole in zone 1.  A hole is cut in zone 1 in the region
+of the flap.  WIND blanks out the solution points within the hole,
+which means that the solution is not computed for those solution
+points.  For a planar grid, the hole is defining by specifying a cutter
+grid surface defined from grid ranges in zones 2.
+
+<P> First, indicate that the boundary conditions of zone 1 for overlapping 
+grids need to be set.
+
+<P><BLOCKQUOTE>
+   Pick <B>BOUNDARY COND</B> <BR>
+   Pick zone <B>1</B> <BR>
+   Pick <B>OLAP</B> <BR>
+   Pick <B>MODIFY BNDY</B>
+</BLOCKQUOTE>
+
+<P> Notice that the K1 grid plane of zone 1 is automatically
+displayed.  The K1 grid planes of zone 2 can also be displayed by
+entering the following
+
+<P><BLOCKQUOTE>
+   Pick <B>SHOW OTHER ZONE</B> <BR>
+   Pick zone <B>2</B> <BR>
+   Pick <B>PICK K-PLANE</B> <BR>
+</B></BLOCKQUOTE>
+
+<P> Start the actual hole cutting by indicating that a cutter surface
+is being defined and clearing the surface definition to assure that
+cutter definition is starting from scratch.
+
+<P><BLOCKQUOTE>
+   Pick <B>OLAP GENERATION</B> <BR>
+   Pick <B>GENERATE HOLES</B> <BR>
+   Pick <B>SET/SHO CUTTER</B> <BR>
+   Pick <B>CUTTER SURFACE</b> <br>
+   Pick <B>CLEAR SURF DEF</B>
+</BLOCKQUOTE>
+
+<p> The cutter surfaces are defined based on grid segments from
+zone 2.  The grid segments must connect end-to-end to form a
+closed surface (which for a planar grid is simply a rectilinear
+line).  Each segment is defind by the zone and starting and ending grid
+coordinates.  For a planar grid, the k-coordinates are always
+k=1.  Further, either the i- or j-coordinate should be repeated for each
+segment.  The zone numbers and (i,j,k) indices are entered within the
+bottom panel of the GMAN display in response to the prompts.  The grid 
+segments in zone 2 are defined as follows
+
+<p><blockquote>
+   Pick <b>SET SRF ZON</b> <br>
+   Enter <b>2</b> for zone 2 (followed by a carriage return [ret]) <br>
+   Pick <b>SET SURF RANGE</b> <br>
+   Enter first corner indices =  <b>17 23 1</b> <i>[ret]</i><br>
+   Enter second corner indices = <b>163 23 1</b> <i>[ret]</i><br>
+   Pick <b>SET SURF RANGE</b> <br>
+   Enter first corner indices =  <b>17 1 1</b> <i>[ret]</i><br>
+   Enter second corner indices = <b>17 23 1</b> <i>[ret]</i><br>
+   Pick <b>SET SURF RANGE</b> <br>
+   Enter first corner indices =  <b>163 1 1</b> <i>[ret]</i><br>
+   Enter second corner indices = <b>163 23 1</b> <i>[ret]</i>
+</blockquote>
+
+<p> The cutter surface is now assigned a label. Numbers 1-7 are
+reserved.  Here the label is assigned the number 10.
+
+<p><blockquote>
+   Pick on <b>LABEL</b> <i> (lower right hand corner of the screen) </i> <br>
+   Enter <b>10</b> for the label number <i>(followed by [ret])</i>
+</blockquote>
+
+<p> Perform the actual hole cutting based on the specified cutter
+surface.
+
+<p><blockquote>
+   Pick <b>GENERATE HOLE</b>
+</blockquote>
+
+<p> At this point, the hole is generated and displayed.  The bottom 
+display window should indicate that "72 hole points were set".
+
+<p><li> The fringe for the hole is now created.  The "fringe" of the hole 
+are the solution points of zone 1 at which information from zone 
+2 is interpolated.  Here the fringe is defined by the solution 
+points making up the boundary of the hole.
+
+<p><blockquote>
+   Pick <b>OLAP GENERATION</b> <i>(top left panel)</i><br>
+   Pick <b>GENERATE FRINGE</b><br>
+   Pick <b>FRG MODE HOLE</b><br>
+   Pick <b>GENERATE FRINGE</b> <i>(from second panel from top on left)</i>
+</blockquote>
+
+<p> At the bottom panel of the display, a sentence will indicate that 
+"52 fringe points were set".
+
+<p><li> Define the boundary conditions for the fringe of zone 1  
+as being coupled to zone 2.  Also save the boundary condition 
+settings.
+
+<p><blockquote>
+   Pick <b>OLAP GENERATION</b><br>
+   Pick <b>SET FRINGE BND</b><br>
+   Pick <b>COUPLE</b><br>
+   Pick zone <b>2</b><br>
+   Pick <b>OLAP</b><br>
+   Pick <b>COUPLE</b><br>
+   Pick <b>BOUNDARY COND</b> <i>(at top left panel)</i><br>
+   Pick <b>YES, SAVE CHANGES</b> to save the boundary conditions<br>
+</blockquote>
+
+<p> During this procedure, in the bottom panel, it was displayed that 
+52 of 52 points were coupled and that the "Grid/iblank has been 
+updated".  
+
+<p><li> The boundary conditions for the fringe points can be displayed 
+by entering 
+
+<p><blockquote>
+   Pick <b>INDENTIFY PNTS.</b><br>
+   Pick <b>ZONE 2 OLAP</b><br>
+</blockquote>
+
+<p> This will display the boundary conditions as coupled to zone 2.
+
+<p><li> The fringe and boundary conditions for zone 2 are now created. 
+The fringe points are selected as the "outer" boundary grid points of 
+zone 2.  The <b>BOUND</b> menu item below is a "toggle" that should be 
+set as displayed below.  A label is assigned for these fringe points.
+
+<p><blockquote>
+   Pick <b>PICK ZONE/BNDY</b><br>
+   Pick zone <b>2</b><br>
+   Pick <b>OLAP</b><br>
+   Pick <b>MODIFY BNDY</b><br>
+   Pick <b>GENERATE FRINGE</b><br>
+   Pick <b>FRG MODE OUTER</b><br>
+   Pick <b>BOUND I1 ON</b> <i>(toggle to ON)</i><br>
+   Pick <b>BOUND IMAX ON</b> <i>(toggle to ON)</i><br>
+   Pick <b>BOUND JMAX ON</b> <i>(toggle to ON)</i><br>
+   Pick on <b>LABEL</b> in the lower right hand corner of the screen <br>
+   Enter <b>11</b> for the label number <i>(followed by [ret])</i><br>
+   Pick <b>GENERATE FRINGE</b> <i>(from second panel from top on left)</i>
+</blockquote>
+
+<p> During this procedure, the grid of zone 2 is displayed.  At the end, 
+the sentence "245 fringe points were set" is displayed in the bottom 
+panel.
+
+<p> Now the boundary conditions on these fringe points are set as being 
+coupled to zone 1.
+
+<p><blockquote>
+   Pick <b>OLAP GENERATION</b><br>
+   Pick <b>SET FRINGE BND</b><br>
+   Pick <b>COUPLE</b><br>
+   Pick zone <b>1</b><br>
+   Pick <b>OLAP</b><br>
+   Pick <b>COUPLE</b><br>
+   Pick <b>BOUNDARY COND</b> <i>(at top left panel)</i><br>
+   Pick <b>YES, SAVE CHANGES</b> to save the boundary conditions<br>
+</blockquote>
+
+<p> The display at the bottom indicates the "245 points were coupled 
+out of 245 tried" and that the "Grid/iblank has been updated". 
+
+<p> One can check that the boundary conditions have been set properly 
+by displaying the boundary conditions,
+
+<p><blockquote>
+   Pick <b>INDENTIFY PNTS.</b><br>
+   Pick <b>ZONE 1 OLAP</b>
+</blockquote>
+
+<p><li> The overlapping boundary conditions can be checked for 
+each zone,
+
+<p><blockquote>
+   Pick <b>CHECK</b> <i>(upper right panel)</i><br>
+   Pick <b>RUN FRNG CHKS</b>
+</blockquote>
+
+<p> If the boundary conditions are all set correctly, then a message 
+will be displayed, "Congratulations, no errors found".  However, for 
+this case, a message is displayed that "91 volume ratios exceed the 
+tolerance".
+
+<p><li> The flow boundary conditions for the non-overlapping 
+boundary conditions of zone 1 are now set. 
+
+<p><blockquote>
+   Pick <b>BOUNDARY COND</b><br>
+   Pick <b>PICK ZONE/BNDY</b><br>
+   Pick zone <b>1</b><br>
+   Pick <b>I1</b><br>
+   Pick <b>MODIFY BNDRY</b><br>
+   Pick <b>CHANGE ALL</b><br>
+   Pick <b>CONFINED OUTFLOW</b><br>
+   Pick <b>BOUNDARY COND</b><br>
+   Pick <b>YES</b> to save the boundary condition information
+</blockquote> 
+
+<p> During this process the grid for the I1 boundary of zone 1 is
+displayed.  The text in the bottom panel will indicate the number of
+points that were changed.  The boundary specification can be checked by
+
+<p><blockquote>
+   Pick <b>IDENTIFY PNTS.</b><br>
+   Pick <b>CONFINED OUTFLOW</b><br>
+</blockquote> 
+
+<p> All the points specified as confined outflow will be colored.
+
+<p> The IMAX boundary is also specified as a CONFINED OUTFLOW,  
+
+<p><blockquote>
+   Pick <b>PICK ZONE/BNDY</b><br>
+   Pick <b>IMAX</b><br>
+   Pick <b>MODIFY BNDRY</b><br>
+   Pick <b>CHANGE ALL</b><br>
+   Pick <b>CONFINED OUTFLOW</b><br>
+   Pick <b>BOUNDARY COND</b><br>
+   Pick <b>YES</b> to save the boundary condition information
+</blockquote> 
+
+<P> The J1 boundary of zone 1 is partially the airfoil surface 
+and partially a coupled boundary.  Pick the J1 surface of zone 1,
+
+<p><blockquote>
+   Pick <b>PICK ZONE/BNDY</b><br>
+   Pick zone <b>1</b><br>
+   Pick <b>J1</b><br>
+</blockquote> 
+
+<P> First, the airfoil surface is specified as a viscous wall,
+
+<p><blockquote>
+   Pick on <b>Work Subarea</b> <i>(lower right hand corner of the screen)</i> <br>
+   Enter the first corner indices = <b>29</b> <i>[ret]</i><br> 
+   Enter the second corner indices = <b>177</b> <i>[ret]</i><br>
+   Pick <b>MODIFY BNDRY</b><br>
+   Pick <b>CHANGE ALL</b><br>
+   Pick <b>VISCOUS WALL</b><br>
+</blockquote> 
+
+<P> A message in the bottom window will display that "149 points 
+were changed".  Now set the subarea as the lower portion of the 
+coupled boundary
+
+<p><blockquote>
+   Pick on <b>Work Subarea</b> <i>(lower right hand corner of the screen)</i> <br>
+   Enter the first corner indices = <b>1</b> <i>[ret]</i><br> 
+   Enter the second corner indices = <b>29</b> <i>[ret]</i><br>
+   Pick <b>COUPLE</b><br>
+   Pick zone <b>1</b><br>
+   Pick <b>J1</b><br>
+   Pick <b>COUPLE</b><br>
+</blockquote> 
+
+<P> A message in the bottom window will display that "28 points 
+were changed".  This means that 28 points, which does not include the 
+trailing edge point, were set as coupled to the J1 boundary.  GMAN only 
+only needs to know the boundary for coupling rather than a grid point 
+range. 
+
+<P> One can view the current settings for the J1 boundary by selecting 
+the "IDENTIFY PNTS" menu item and toggleling the boundary conditions,
+
+<p><blockquote>
+   Pick <b>IDENTIFY PNTS.</b><br>
+   Pick <b>VISCOUS WALL</b><br>
+   Pick <b>ZONE 1  J1</b><br>
+   Pick <b>ZONE 1  J1</b><br>
+   Pick <b>UNDEFINED</b><br>
+</blockquote> 
+
+<P> One should be able to realize that the "ZONE 1  J1" boundary conditions 
+are set for the J1 boundary grid points from I1 to I28 and the "UNDEFINED" 
+boundary conditions are set for the J1 boundary grid points from I178 to 
+I205.  These boundary grid points are now set as coupled to the J1 
+boundary
+
+<p><blockquote>
+   Pick on <b>Work Subarea</b> <i>(lower right hand corner of the screen)</i> <br>
+   Enter the first corner indices = <b>177</b> <i>[ret]</i><br> 
+   Enter the second corner indices = <b>MAX</b> <i>[ret]</i><br>
+   Pick <b>COUPLE</b><br>
+   Pick zone <b>1</b><br>
+   Pick <b>J1</b><br>
+   Pick <b>COUPLE</b><br>
+</blockquote> 
+
+<P> Note that above, "MAX" is used to indicate the last grid point of the 
+boundary.  If one now does the "IDENTIFY PNTS" menu item, there now are 
+no undefined boundary grid points.
+
+<P> The JMAX boundary is now set as an inflow outflow boundary,
+
+<p><blockquote>
+   Pick <b>PICK ZONE/BNDY</b><br>
+   Pick <b>JMAX</b><br>
+   Pick <b>MODIFY BNDRY</b><br>
+   Pick <b>CHANGE ALL</b><br>
+   Pick <b>INFLOW OUTFLOW</b><br>
+   Pick <b>BOUNDARY COND</b><br>
+   Pick <b>YES</b> to save the boundary condition information
+</blockquote> 
+
+<P><LI> The boundary conditions for the non-overlapping boundaries of 
+the flap zone (zone 2) are now set.  First set the boundary conditions 
+for the J1 boundary,
+
+<p><blockquote>
+   Pick <b>PICK ZONE/BNDY</b><br>
+   Pick zone <b>2</b><br>
+   Pick <b>J1</b><br>
+</blockquote> 
+
+<p><blockquote>
+   Pick on <b>Work Subarea</b> <i>(lower right hand corner of the screen)</i> <br>
+   Enter the first corner indices = <b>21</b> <i>[ret]</i><br> 
+   Enter the second corner indices = <b>159</b> <i>[ret]</i><br>
+   Pick <b>MODIFY BNDRY</b><br>
+   Pick <b>CHANGE ALL</b><br>
+   Pick <b>VISCOUS WALL</b><br>
+</blockquote> 
+
+<p><blockquote>
+   Pick on <b>Work Subarea</b> <i>(lower right hand corner of the screen)</i> <br>
+   Enter the first corner indices = <b>1</b> <i>[ret]</i><br> 
+   Enter the second corner indices = <b>21</b> <i>[ret]</i><br>
+   Pick <b>COUPLE</b><br>
+   Pick zone <b>2</b><br>
+   Pick <b>J1</b><br>
+   Pick <b>COUPLE</b><br>
+</blockquote> 
+
+
+<p><blockquote>
+   Pick on <b>Work Subarea</b> <i>(lower right hand corner of the screen)</i> <br>
+   Enter the first corner indices = <b>159</b> <i>[ret]</i><br> 
+   Enter the second corner indices = <b>MAX</b> <i>[ret]</i><br>
+   Pick <b>COUPLE</b><br>
+   Pick zone <b>2</b><br>
+   Pick <b>J1</b><br>
+   Pick <b>COUPLE</b><br>
+   Pick <b>BOUNDARY COND</b><br>
+   Pick <b>YES</b> to save the boundary condition information
+</blockquote> 
+
+<p><li> A listing of the boundary conditions and fringes can be 
+obtained from the list options on the right-hand side of the display.
+
+<p><blockquote>
+   Pick <b>LIST</b><br>
+   Pick <b>LIST OPTIONS</b><br>
+   Pick <b>BNDY CND REPORT</b><br>
+   Pick <b>FRINGE REPORT</b>
+</blockquote> 
+
+<p><li> The <b>nlrflap.cgd</b> file is now complete.  Exit GMAN.
+
+<p><blockquote>
+   Pick <b>TOP</b><br>
+   Pick <b>END</b><br>
+   Pick <b>YES-TERMINATE</b>
+</blockquote> 
+
+</OL>
+
+<P> The journal file <b>gman.jou</b> can be saved as <b>gman.com</b> 
+for a batch-type of operation.  Then GMAN can be run as
+
+<BLOCKQUOTE>
+  <B>gman &lt; <A HREF="gman.com">gman.com</A></B>
+</BLOCKQUOTE>
+
+<P> where the file <A HREF="gman.com">gman.com</A> is a command
+input file. The commond grid file 
+<A HREF="nlrflap.cgd">nlrflap.cgd</A> is updated in the process.
+
+
+<!---------------------------------------------------------------------->
+<H3><U><FONT COLOR="#800000">Computation Strategy</FONT></U></H3>
+
+<P> The computation is performed using the time-marching capabilities
+of WIND to march to a steady-state (time asymptotic) solution.  Local 
+time stepping is used at each iteration.  The time-marching is performed 
+until convergence criteria is achieved.
+
+
+<!---------------------------------------------------------------------->
+<H3><U><FONT COLOR="#800000">Input Parameters and Files</FONT></U></H3>
+
+<P> The input data file for WIND is <A HREF="nlrflap.dat">nlrflap.dat</A>.  
+The <B>freestream</B> keyword
+indicates that the static freestream flow conditions are specified as
+Mach number, pressure (psia), temperature (R), angle-of-attack
+(degrees), and angle-of-sideslip (degrees).  The <B>downstream pressure</B> 
+keyword indicates that the freestream static pressure is to be used at 
+the CONFINED OUTFLOW boundaries.  The <B>turbulence model</B> keyword 
+indicates that the Spalart-Allmara turbulence model is to be used.  The 
+<B>loads</B> keyword indicates that the lift on the airfoil is to be 
+integrated every 20 iterations and displayed in the list file.  This 
+will be used to evaluate the convergence of the solution. The <B>converge 
+order</B> keyword indicates that the computation will stop if the L2 
+norm of the solution drops by 5 orders-of-magnitude.  The <B>cycles</B> 
+keyword indicates that 1000 cycles will be run.  The <B>iterations per 
+cycle</B> keyword indicates that 5 iterations will be run per cycle. 
+The <B>cfl#</B> keyword indicates that a CFL number of 1.5 will be used. 
+By default, WIND uses local CFL number to determine the time-step size.
+
+<P> This computation is performed using parallel processing.  A
+multi-processor control (.mpc) file is required and is created as 
+<A HREF="nlrflap.mpc">nlrflap.mpc</A>.
+
+<!---------------------------------------------------------------------->
+<H3><U><FONT COLOR="#800000">Computation</FONT></U></H3>
+
+<P> The WIND solver is run by entering
+
+<BLOCKQUOTE>
+  <B>wind -runinplace -dat nlrflap -mp -parallel</B>
+</BLOCKQUOTE>
+
+<P> This runs the <B>wind</B> script which sets up the problem for solver. 
+The <B>runinplace</B> option indicates that WIND is to be run in the 
+current directory.  The <B>dat</B> option indicates that the input 
+data file is <A HREF="nlrflap.dat"> nlrflap.dat</A>. The <B>mp</B> and 
+<B>parallel</B> indicate that a parallel computation is to be performed. 
+Further details and 
+options for the <B>wind</B> script 
+can be found in the WIND documentation 
+(<A HREF="http://www.lerc.nasa.gov/WWW/winddocs/user/scripts.html#scripts:scripts">wind script</A>). 
+A brief description of script options can be listed by typing
+
+<BLOCKQUOTE>
+  <B>wind -help</B>
+</BLOCKQUOTE>
+
+<P> Some initial interactive prompts ask for information to set up the
+computation.  First, select <B>1</B> to run the <B>Production
+version</B>.
+
+<P> The next few questions ask about "Output data", "Mesh file", and
+"Flow data file" file names. Entering a carriage return will select the
+default names. A common flow data file <B>nlrflap.cfl</B> does not
+currently exists, so WIND initialize the flow from the freestream
+conditions and creates the new flow data file.
+
+<P> The next question allows a choice between running the solution in
+real-time (interactive) or submitting it to a queue. First, try running
+it interactively by selecting <B>1</B>.
+
+<P> The next question asks about the remote directory. Enter a return.
+
+<P> The next questions asks whether the output should be written to the
+screen or to a list file <B>nlrflap.lis</B>. Enter <B>n</B> to create a
+list file.
+
+<P> Some file information will be displayed.  A final carriage return
+will cause the job to be submitted.  One can view the progress of the
+computation by opening another window and typeing out the
+<B>nlrflap.lis</B> file.
+
+<P> The list file is <A HREF="nlrflap.lis">nlrflap.lis</A> and contains
+the output from the computation and lists the residual information for
+both the flow equations and the turbulence model equation for each
+iteration.  The integrated lift is also output every 20 iterations.  
+
+<P> The flow data file is <A HREF="nlrflap.cfl">nlrflap.cfl</A> and
+contains the final solution.
+
+
+<!---------------------------------------------------------------------->
+<H3><U><FONT COLOR="#800000">Convergence</FONT></U></H3>
+
+<P> There are several ways to examine the convergence of the solution. 
+The RESPLT utility is used for these to read information from the 
+list file <A HREF="nlrflap.lis">nlrflap.lis</A>.  First the L2 norm 
+of the residual of the conservation variables (change over a time step) 
+can be read from the list file,
+
+<BLOCKQUOTE>
+  <B>resplt &lt;</B> <A HREF="resplt.nsl2.com">resplt.nsl2.com</A>
+</BLOCKQUOTE>
+
+<P> The file <A HREF="resplt.nsl2.com">resplt.nsl2.com</A> is a command
+file containing the inputs for RESPLT to output the GENPLOT formatted
+plot data file named <A HREF="nsl2.gen">nsl2.gen</A> of the residuals
+as a function of the iterations.  This file can be plotted using
+CFPOST,
+
+<BLOCKQUOTE>
+  <B>cfpost &lt;</B> <A HREF="cfpost.nsl2.com">cfpost.nsl2.com</A>
+</BLOCKQUOTE>
+
+<P> where the file <A HREF="cfpost.nsl2.com">cfpost.nsl2.com</A> is a command
+file containing the inputs for CFPOST.  Fig. 3 shows the solution residual 
+that is displayed by CFPOST.
+
+<P><CENTER><IMG SRC="nsl2.jpg" BORDER=1 ></CENTER>
+<CENTER><B>Figure 3. Plot of the L2 solution residual history.</B></CENTER>
+
+<P> The convergence information for the Spalart-Allmaras turbulence
+variable can be obtained from the list file using RESPLT,
+
+<BLOCKQUOTE>
+  <B>resplt &lt;</B> <A HREF="resplt.sal2.com">resplt.sal2.com</A>
+</BLOCKQUOTE>
+
+<P> The file <A HREF="resplt.sal2.com">resplt.sal2.com</A> is a command
+file containing the inputs for RESPLT to output the GENPLOT formatted
+plot data file named <A HREF="sal2.gen">sal2.gen</A> of the residuals
+as a function of the iterations.  This file can be plotted using
+CFPOST,
+
+<BLOCKQUOTE>
+  <B>cfpost &lt;</B> <A HREF="cfpost.sal2.com">cfpost.sal2.com</A>
+</BLOCKQUOTE>
+
+<P> where the file <A HREF="cfpost.sal2.com">cfpost.sal2.com</A> is a
+command file containing the inputs for CFPOST.  Fig. 4 shows the
+turbulence residual that is displayed by CFPOST.
+
+<P><CENTER><IMG SRC="sal2.jpg" BORDER=1 ></CENTER> 
+<CENTER><B>Figure 4. Plot of the L2 turbulence residual history.</B></CENTER>
+
+<P> A more significant indicator of solution convergence is to examine
+the convergence of the engineering quantity to be obtained from the
+analysis.  Here it is lift and drag on the airfoil.  The <B>loads</B>
+keyword in the input data file <A HREF="nlrflap.dat">nlrflap.dat</A>
+output this information into the list file <A
+HREF="nlrflap.lis">nlrflap.lis</A>.  RESPLT is used to read this
+information and create plot files,
+
+<BLOCKQUOTE>
+  <B>resplt &lt;</B> <A HREF="resplt.liftconv.com">resplt.liftconv.com</A>
+</BLOCKQUOTE>
+
+<P> The file <A HREF="resplt.liftconv.com">resplt.liftconv.com</A> is a
+command file containing the inputs for RESPLT to output the GENPLOT
+formatted plot data file named <A HREF="liftconv.gen">liftconv.gen</A>
+of the residuals as a function of the iterations.  This file can be
+plotted using CFPOST,
+
+<BLOCKQUOTE>
+  <B>cfpost &lt;</B> <A HREF="cfpost.liftconv.com">cfpost.liftconv.com</A>
+</BLOCKQUOTE>
+
+<P> where the file <A
+HREF="cfpost.liftconv.com">cfpost.liftconv.com</A> is a command file
+containing the inputs for CFPOST. CFPOST will display in sequence the
+plots for drag, lift, and z-direction force.  Fig. 5 and 6 shows the
+convergence of the drag and lift as displayed by CFPOST.
+
+<P><CENTER><IMG SRC="dragconv.jpg" BORDER=1 ></CENTER>
+<CENTER><B>Figure 5. Plot of the sectional drag on the airfoil 
+with iterations</B></CENTER>
+
+<P><CENTER><IMG SRC="liftconv.jpg" BORDER=1 ></CENTER>
+<CENTER><B>Figure 6. Plot of the sectional lift on the airfoil 
+with iterations</B></CENTER>
+
+
+<!---------------------------------------------------------------------->
+<H3><U><FONT COLOR="#800000">Post-Processing</FONT></U></H3>
+
+<P> The CFPOST utility can be used to generate engineering information 
+from the the data files.  First, the PLOT3D files can be obtained for 
+displaying in FAST,
+
+<BLOCKQUOTE>
+  <B>cfpost &lt;</B> <A HREF="cfpost.plot3d.com">cfpost.plot3d.com</A><BR>
+  <B>fast</B> <A HREF="fast.com">fast.com</A> 
+</BLOCKQUOTE>
+
+<P> The PLOT3D grid file (with i-blanking) created is named <A
+HREF="nlrflap_blank.x">nlrflap_blank.x</A> and the solution file is <A
+HREF="nlrflap.q">nlrflap.q</A>.  Both are unformatted, whole, 3D, and
+multi-zone.  The FAST command file <A HREF="fast.com">fast.com</A>
+will read these files, and calculate the pressure and Mach number. 
+
+<P> The CFPOST utility can generate color contour plots at a cut in 
+the flowfield.  However, a truly three-dimensional solution is 
+needed to generate the surface.  The Fortran program 
+<A HREF="make3d.f">make3d.f</A> reads in the PLOT3D grid and solution 
+files output by <A HREF="cfpost.plot3d.com">cfpost.plot3d.com</A> and 
+creates PLOT3D grid and solution files with two K planes at z = 1.0 ft 
+and z = 2.0 ft.  A cut is then made at z = 1.5 ft.  These PLOT3D files 
+are then converted to common grid and common solution files.  The 
+process is as follows,
+
+<BLOCKQUOTE>
+  <B>make3d</B><BR>
+  <B>/bin/rm -rf n3d.cgd</B><BR>
+  <B>cfcnvt &lt;</B> <A HREF="cfcnvt.n3dx.com">cfcnvt.n3dx.com</A><BR>
+  <B>gman &lt;</B> <A HREF="gman.n3d.com">gman.n3d.com</A><BR>
+  <B>/bin/rm -rf n3d.cfl</B><BR>
+  <B>cfcnvt &lt;</B> <A HREF="cfcnvt.n3dq.com">cfcnvt.n3dq.com</A><BR>
+  <B>cfpost &lt;</B> <A HREF="cfpost.mach.com">cfpost.mach.com</A><BR>
+</BLOCKQUOTE>
+
+<P> Figure 1 shows the Mach number contours about the airfoil and flap.  
+Figure 7 shows the Mach number contours in the region of the flap.  
+The <A HREF="machleg.jpg">Mach number legend</A> can be viewed here.
+
+<P><CENTER><IMG SRC="mach2.jpg" BORDER=1 ></CENTER>
+<CENTER><B>Figure 7. The mach number contours in the region of the 
+flap.</B></CENTER>
+
+
+<P> For an airfoil calculation, one piece of important information is
+the distribution of pressure coefficients on the airfoil and flap.
+CFPOST can directly output and plot this information,
+
+<BLOCKQUOTE>
+  <B>cfpost &lt;</B> <A HREF="cfpost.cp.com">cfpost.cp.com</A>
+</BLOCKQUOTE>
+
+<P> where <A HREF="cfpost.cp.com">cfpost.cp.com</A> is the command
+input file for CFPOST.  A GENPLOT file named <A
+HREF="cp.gen">cp.gen</A> is created and plotted.  The
+pressure coefficient is negative for pressures less than freestream,
+which occurs on the top of the airfoil.  In plots of pressure
+coefficients for airfoils, the negative of the pressure coefficient is
+usually plotted to indicate that the lower pressure region is on the
+top of the airfoil and the high pressure region is on the bottom of the
+airfoil.  This is done in the CFPOST command file <A
+HREF="cfpost.cp.com">cfpost.cp.com</A>.
+
+<P><CENTER><IMG SRC="cp.jpg" BORDER=1 ></CENTER>
+<CENTER><B>
+Figure 7. Plot of the pressure coefficients on the airfoil and flap. 
+</B></CENTER>
+
+
+<P> For an airfoil calculation, another piece of important information
+is the forces on the airfoil which result from pressure and
+skin-friction.  CFPOST can be used to integrate these forces over the
+surface of the airfoil,
+
+<BLOCKQUOTE>
+  <B>cfpost &lt;</B> <A HREF="cfpost.forces.com">cfpost.forces.com</A>
+</BLOCKQUOTE>
+
+<P> where <A HREF="cfpost.forces.com">cfpost.forces.com</A> is the
+command input file for CFPOST.  A list file named <A
+HREF="forces.lis">forces.lis</A> is created in which the force
+information is printed.
+
+
+<P> For a viscous computation, it is useful to examine how well the
+boundary layers were resolved.  One measure of this is the y+ values at
+the grid points in the boundary layers.  The list file <A
+HREF="forces.lis">forces.lis</A> does contain information on the y+
+values throughout the grid.  To examine the boundary layer at a certain
+location, CFPOST can be used.
+
+<BLOCKQUOTE>
+  <B>cfpost &lt;</B> <A HREF="cfpost.bl.com">cfpost.bl.com</A>
+</BLOCKQUOTE>
+
+<P> The file <A HREF="cfpost.bl.com">cfpost.bl.com</A> is a command
+file which writes out the x and y coordinates, u-velocity, v-velocity,
+and temperature at I165, which is on the top of the airfoil just before 
+the trailing edge <A HREF="bl.gen">bl.gen</A>.   
+
+
+<!---------------------------------------------------------------------->
+<H3><U><FONT COLOR="#800000">Comparisons of the Results</FONT></U></H3>
+
+<P> The experimental data has not been obtained by the author.
+
+
+<!---------------------------------------------------------------------->
+<H3><U><FONT COLOR="#800000">Sensitivity Studies</FONT></U></H3>
+
+<P> No sensitivity studies were performed.
+
+
+<!---------------------------------------------------------------------->
+<H3><U><FONT COLOR="#800000">Performance</FONT></U></H3>
+
+<P>  The computations were performed on a Silicon Graphics Octane
+workstation with 2 195 MHZ IP30 MIPS R10000 Processors.  The Octane had
+a main memory of 896 Mbytes, an instruction cache size of 32 Kbytes,
+and a data cache size of 32 Kbytes. The computation of 5000 iterations
+required 6311.79 CPU seconds.
+
+
+<!---------------------------------------------------------------------->
+<H3><U><FONT COLOR="#800000">References</FONT></U></H3>
+
+<P> NLR.
+
+
+<!---------------------------------------------------------------------->
+<h3><font color="#800000"> <u>Log and Contact Information</u> </font></h3>
+
+<P> This case was created on September 30, 1998 by 
+<A HREF="mailto:John.W.Slater@lerc.nasa.gov" > John W. Slater</A>, 
+who may be contacted at 
+
+<BLOCKQUOTE>
+   NASA Lewis Research Center, MS 86-7 <BR>
+   21000 Brookpark Road <BR>
+   Cleveland, Ohio  44111 <BR>
+   Phone: (216) 433-8513 <BR>
+   e-mail: <A HREF="mailto:John.W.Slater@lerc.nasa.gov" > 
+      John.W.Slater@lerc.nasa.gov</A>
+</BLOCKQUOTE>
+
+
+<!---------------------------------------------------------------------->
+<!...Trailer...>
+
+<P><HR><I><FONT SIZE=-1> This page was last updated on 
+September 30, 1998. </FONT></I>
+
+
+</BODY>
+</HTML>

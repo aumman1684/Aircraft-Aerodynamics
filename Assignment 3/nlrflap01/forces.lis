@@ -1,0 +1,172 @@
+NLR Airfoil with Flap. Laminar Flow.
+M = 0.2, p 14.7, T 520.0 R. Alpha = 0.0
+
+Freestream conditions (* indicates calculated)
+
+Mach number                   0.200
+Angle of attack               0.000 degrees
+Yaw angle                     0.000 degrees
+Gamma                         1.400
+Gas constant (R)            286.959 m2/s2-K         1716.000 ft2/s2-R
+Static pressure         101353.     N/m2         14.7000     lbf/in2
+Static temperature      288.889     K            520.000     R
+Static density*         1.22260     kg/m3       0.237224E-02 slug/ft3
+Total pressure*         104219.     N/m2         15.1157     lbf/in2
+Total temperature*      291.200     K            524.160     R
+Total density*          1.24720     kg/m3       0.241997E-02 slug/ft3
+Speed of sound          340.674     m/s          1117.70     ft/s
+Velocity                68.1348     m/s          223.540     ft/s
+Dynamic pressure        2837.88     N/m2        0.411600     lbf/in2
+Laminar Viscosity      0.179661E-04 kg/m-s      0.375229E-06 slug/ft-s
+Enthalpy*               290147.     m2/s2       0.312312E+07 ft2/s2
+Stagnation Enthalpy*    292468.     m2/s2       0.314810E+07 ft2/s2
+
+
+
+Downstream axis is +X, vertical axis is +Y
+
+Reference area  :  1.00000E+00 ft2
+
+Reference length:  1.00000E+00 ft      
+
+Moments computed about reference point:
+               X:  2.50000E-01 ft      
+               Y:  0.00000E+00 ft      
+               Z:  0.00000E+00 ft      
+
+Force integration modes: 
+
+Integrate only over points with zero velocity
+
+Normal derivatives computed second order
+
+Pressure integration performed as (p-pinf)*dASubset  1 of ZONE   1 (*UNTITLED*), 
+J=  1: area is  3.004349E+02 in2,  1.938286E-01 m2
+   Ax =  0.518187E+02 in2, Ay =  0.288012E+03 in2, Az =  0.000000E+00 in2
+   Ax+=  0.259093E+02 in2, Ay+=  0.144006E+03 in2, Az+=  0.000000E+00 in2
+   Ax-=  0.259093E+02 in2, Ay-=  0.144006E+03 in2, Az-=  0.000000E+00 in2
+
+
+Reference dynamic pressure:  4.11600E-01 lbf/in2
+
+y+ values:
+   Average (one point off)  =  1.27542E+00
+   Average (two points off) =  2.85798E+00
+   Maximum (one point off)  =  2.73241E+00 at I=131, J=  1, K=  1
+         where (two points) =  6.10209E+00
+
+Heat transfer values:
+   Maximum    =  1.20775E+03 at I=132, J=  1, K=  1
+   Integrated (2nd order) =  1.76079E+02
+   Integrated (1st order) = -1.52250E-01
+
+Coefficients:
+   Pressure            Viscous             Total
+   CL  =  1.40861E+00  CL  =  1.03529E-03  CL  =  1.40965E+00
+   CD  = -7.05198E-02  CD  =  9.66295E-03  CD  = -6.08568E-02
+   CX  = -7.05198E-02  CX  =  9.66295E-03  CX  = -6.08568E-02
+   CY  =  1.40861E+00  CY  =  1.03529E-03  CY  =  1.40965E+00
+   CZ  =  0.00000E+00  CZ  =  0.00000E+00  CZ  =  0.00000E+00
+   CMX =  0.00000E+00  CMX =  0.00000E+00  CMX =  0.00000E+00
+   CMY =  0.00000E+00  CMY =  0.00000E+00  CMY =  0.00000E+00
+   CMZ =  2.63748E-01  CMZ = -7.40291E-04  CMZ =  2.63007E-01
+
+First order viscous coefficients:
+   CX  =  9.61762E-03  -4.69095E-01 percent difference
+   CY  =  9.67644E-04  -6.53362E+00 percent difference
+   CZ  =  0.00000E+00   0.00000E+00 percent difference
+
+Dimensional surface totals:
+   Lift      =  8.35503E+01 lbf
+   Drag      = -3.60701E+00 lbf
+   X-force   = -3.60701E+00 lbf
+   Y-force   =  8.35503E+01 lbf
+   Z-force   =  0.00000E+00 lbf
+   X-moment  =  0.00000E+00 in*lbf
+   Y-moment  =  0.00000E+00 in*lbf
+   Z-moment  =  1.87063E+02 in*lbf
+   Heat xfer =  1.20653E+01 ft*lbf/sec
+             =  5.58139E+01 Btu/hr
+             =  1.55039E-02 Btu/sec
+             =  1.63583E+01 Watts
+
+Subset  1 of ZONE   2 (*UNTITLED*), 
+J=  1: area is  1.007513E+02 in2,  6.500071E-02 m2
+
+   Ax =  0.281607E+02 in2, Ay =  0.950150E+02 in2, Az =  0.000000E+00 in2
+   Ax+=  0.140803E+02 in2, Ay+=  0.475075E+02 in2, Az+=  0.000000E+00 in2
+   Ax-=  0.140803E+02 in2, Ay-=  0.475075E+02 in2, Az-=  0.000000E+00 in2
+
+
+Reference dynamic pressure:  4.11600E-01 lbf/in2
+
+y+ values:
+   Average (one point off)  =  6.18038E-01
+   Average (two points off) =  1.29124E+00
+   Maximum (one point off)  =  1.08405E+00 at I= 91, J=  1, K=  1
+         where (two points) =  2.24806E+00
+
+Heat transfer values:
+   Maximum    =  2.26223E+02 at I= 21, J=  1, K=  1
+   Integrated (2nd order) =  1.85105E+01
+   Integrated (1st order) = -9.08480E-02
+
+Coefficients:
+   Pressure            Viscous             Total
+   CL  =  3.42120E-01  CL  = -5.09053E-04  CL  =  3.41611E-01
+   CD  =  8.77127E-02  CD  =  2.89829E-03  CD  =  9.06110E-02
+   CX  =  8.77127E-02  CX  =  2.89829E-03  CX  =  9.06110E-02
+   CY  =  3.42120E-01  CY  = -5.09053E-04  CY  =  3.41611E-01
+   CZ  =  0.00000E+00  CZ  =  0.00000E+00  CZ  =  0.00000E+00
+   CMX =  0.00000E+00  CMX =  0.00000E+00  CMX =  0.00000E+00
+   CMY =  0.00000E+00  CMY =  0.00000E+00  CMY =  0.00000E+00
+   CMZ =  2.94045E-01  CMZ = -3.69444E-04  CMZ =  2.93675E-01
+
+First order viscous coefficients:
+   CX  =  2.88591E-03  -4.27142E-01 percent difference
+   CY  = -5.13558E-04   8.84985E-01 percent difference
+   CZ  =  0.00000E+00   0.00000E+00 percent difference
+
+Dimensional surface totals:
+   Lift      =  2.02474E+01 lbf
+   Drag      =  5.37055E+00 lbf
+   X-force   =  5.37055E+00 lbf
+   Y-force   =  2.02474E+01 lbf
+   Z-force   =  0.00000E+00 lbf
+   X-moment  =  0.00000E+00 in*lbf
+   Y-moment  =  0.00000E+00 in*lbf
+   Z-moment  =  2.08875E+02 in*lbf
+   Heat xfer =  1.26837E+00 ft*lbf/sec
+             =  5.86749E+00 Btu/hr
+             =  1.62986E-03 Btu/sec
+             =  1.71968E+00 Watts
+
+
+*********************************** Totals ***********************************
+
+** Total Wetted area is 4.011862E+02 in2, 2.588293E-01 m2
+
+Coefficients:
+   Pressure            Viscous             Total
+   CL  =  1.75073E+00  CL  =  5.26233E-04  CL  =  1.75126E+00
+   CD  =  1.71929E-02  CD  =  1.25612E-02  CD  =  2.97542E-02
+   CX  =  1.71929E-02  CX  =  1.25612E-02  CX  =  2.97542E-02
+   CY  =  1.75073E+00  CY  =  5.26233E-04  CY  =  1.75126E+00
+   CZ  =  0.00000E+00  CZ  =  0.00000E+00  CZ  =  0.00000E+00
+   CMX =  0.00000E+00  CMX =  0.00000E+00  CMX =  0.00000E+00
+   CMY =  0.00000E+00  CMY =  0.00000E+00  CMY =  0.00000E+00
+   CMZ =  5.57793E-01  CMZ = -1.10974E-03  CMZ =  5.56683E-01
+ 
+Dimensional surface totals:
+   Lift      =  1.03798E+02 lbf
+   Drag      =  1.76354E+00 lbf
+   X-force   =  1.76354E+00 lbf
+   Y-force   =  1.03798E+02 lbf
+   Z-force   =  0.00000E+00 lbf
+   X-moment  =  0.00000E+00 in*lbf
+   Y-moment  =  0.00000E+00 in*lbf
+   Z-moment  =  3.95938E+02 in*lbf
+   Heat xfer =  1.33336E+01 ft*lbf/sec
+             =  6.16814E+01 Btu/hr
+             =  1.71337E-02 Btu/sec
+             =  1.80780E+01 Watts

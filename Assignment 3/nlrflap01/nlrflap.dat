@@ -1,0 +1,24 @@
+NLR Airfoil with Flap. Turbulent Flow.
+M = 0.2, p 14.7, T 520.0 R. Alpha = 0.0
+nlrflap.dat
+
+freestream static 0.2 14.7 520. 0. 0.
+downstream pressure freestream zone 1
+turbulence spalart allmaras  
+
+loads
+   zone 1
+   print totals zones lift frequency 20
+   reference area 1
+   reference length 1.0
+   reference moment center 0.25 0.0 0.0
+   subset i 29 177 j 1 1 k 1 1 force noslip
+endloads
+
+converge order 5
+cycles 1000
+iterations per cycle 5
+
+cfl# 1.5
+
+end
